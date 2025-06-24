@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!--    spring整合Mybatis(dao层)-->
+<!--    1.进行数据源的配置-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!--    配置数据源信息-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+
+<!--    2.sqlSessionFactory-->
+ <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+     <property name="dataSource" ref="dataSource"/>
+<!--     别名扫描-->
+     <property name="typeAliasesPackage" value="com.myweb.domain"/>
+<!--sql查询分页插件-->
+     <property name="plugins">
+         <array>
+             <bean class="com.github.pagehelper.PageHelper">
+                 <property name="properties">
+                     <value>
+                         配置分页插件方言（sql数据库专用）
+                         helperDialect=mysql
+                     </value>
+                 </property>
+             </bean>
+         </array>
+     </property>
+<!--     引入加载mybatis核心配置文件（有特殊需求时需要引入）-->
+     <property name="configLocation" value="classpath:sqlMapConfig.xml"/>
+ </bean>
+<!--    3.Mapper映射扫描-->
+<!--    加载配置文件的时候，会对该包（com.myweb.dao"）下所有的mapper接口进行扫描，并且生成每个接口对应的代理对象存到ioc容器中-->
+    <bean id="MapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.myweb.dao"/>
+    </bean>
+
+
+</beans>

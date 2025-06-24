@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.dao.MenuMapper">
+    <resultMap id="MenuResult" type="com.myweb.domain.Menu">
+        <id column="id" property="id"></id>
+        <result column="href" property="href"></result>
+        <result column="icon" property="icon"></result>
+        <result column="name" property="name"></result>
+        <result column="parent_id" property="parentId"></result>
+        <result column="description" property="description"></result>
+        <result column="order_num" property="orderNum"></result>
+        <result column="shown" property="shown"></result>
+        <result column="created_time" property="createdTime"></result>
+        <result column="updated_time" property="updatedTime"></result>
+        <result column="created_by" property="createdBy"></result>
+        <result column="updated_by" property="updatedBy"></result>
+
+<!--        subMenuList也在Menu实体类内，做查询返回保存在subMenuList中-->
+        <collection property="subMenuList" ofType="com.myweb.domain.Menu" select="findSubMenuListByPid" column="id">
+        </collection>
+    </resultMap>
+
+
+
+
+    <select id="findSubMenuListByPid" resultType="int" resultMap="MenuResult">
+<!--        查询menu表返回所有id=#{id}的父级菜单的id=parent_id的子级菜单-->
+        select * from menu where parent_id = #{id}
+    </select>
+
+    <select id="findAllMenu" resultType="com.myweb.domain.Menu">
+        select * from menu
+    </select>
+
+    <select id="findMenuById" parameterType="int" resultType="com.myweb.domain.Menu">
+        select * from menu where id = #{id}
+    </select>
+
+
+</mapper>

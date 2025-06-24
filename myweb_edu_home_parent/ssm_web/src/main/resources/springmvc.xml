@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        ">
+
+
+<!--    1.进行组件扫描——让注解生效-->
+    <context:component-scan base-package="com.myweb.controller"/>
+
+<!--    2.mvc注解增强（ 数据进行json转换响应给页面）-->
+    <mvc:annotation-driven/>
+
+<!--    3.视图解析器——有视图跳转需求时配置-->
+
+
+<!--    4.静态资源放行-->
+    <mvc:default-servlet-handler/>
+
+<!--    5.配置文件上传解析器-->
+<!--    id为固定写法，不能随便命名-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760"></property>
+    </bean>
+
+</beans>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.myweb.dao.RoleMapper">
+
+<!--    查询所有角色&条件查询(name)-->
+    <select id="findAllRole" parameterType="com.myweb.domain.Role" resultType="com.myweb.domain.Role">
+        select * from roles
+        <where>
+            <if test="name !=null and name !='' ">
+                name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+<!--    根据角色ID查询该角色关联的额菜单信息ID-->
+    <select id="findMenuByRoleId" resultType="int" parameterType="int">
+        SELECT
+        m.id
+        FROM
+        roles r
+        INNER JOIN role_menu_relation rm ON r.id = rm.role_id
+        INNER JOIN menu m ON m.id = rm.menu_id
+        WHERE
+        r.id = #{id}
+    </select>
+
+    <delete id="deleteRoleContextMenu" parameterType="int">
+        delete from Role_menu_relation where role_id = #{roleId}
+    </delete>
+
+
+    <insert id="RoleContextMenu" parameterType="com.myweb.domain.Role_menu_relation">
+        insert into Role_menu_relation values(null,#{menuId},#{roleId},#{createdTime},#{updatedTime},#{createdBy},#{updatedby})
+    </insert>
+
+    <delete id="deleteRole" parameterType="int">
+        delete from roles where id = #{roleId}
+    </delete>
+
+</mapper>

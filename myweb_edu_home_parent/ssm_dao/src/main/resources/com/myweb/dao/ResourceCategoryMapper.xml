@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.dao.ResourceCategoryMapper">
+    <select id="findAllResourceCategory" resultType="com.myweb.domain.ResourceCategory">
+        select * from resource_category
+    </select>
+
+
+    <insert id="insertResourceCategory" parameterType="com.myweb.domain.ResourceCategory">
+        insert into resource_category
+        values(
+        null,#{name},#{sort},#{createdTime},#{updatedTime},#{createdBy},#{updatedBy})
+    </insert>
+
+    <update id="updateResourceCategory" parameterType="com.myweb.domain.ResourceCategory">
+        update resource_category
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name !=null and name != ''">
+                name = #{name},
+            </if>
+            <if test="sort !=null and sort != ''">
+                sort = #{sort},
+            </if>
+            <if test="updatedTime !=null">
+                updated_time = #{updatedTime},
+            </if>
+        </trim>
+        <where>
+            <if test="id != null and id != '' ">id = #{id}</if>
+        </where>
+    </update>
+
+    <delete id="deleteResourceCategoryById" parameterType="com.myweb.domain.ResourceCategory">
+        delete from resource_category where id = #{id}
+    </delete>
+
+    
+    <resultMap id="ResourceResult" type="com.myweb.domain.ResourceCategory">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="sort" property="sort"></result>
+        <result column="created_time" property="createdTime"></result>
+        <result column="updated_time" property="updatedTime"></result>
+        <result column="created_by" property="createdBy"></result>
+        <result column="updated_by" property="updatedBy"></result>
+
+        <collection property="resourceList" ofType="com.myweb.domain.ResourceCategory" select="com.myweb.dao.ReourceMapper.findResourceBycategoryId"
+                    column="sort" javaType="java.util.List"></collection>
+    </resultMap>
+
+<!--    获取当前角色拥有的资源信息-->
+    <select id="findResourceListByRoleId" parameterType="int" resultMap="ResourceResult">
+        select * from resource_category where id = #{id}
+    </select>
+
+<!--    删除关系表中的关系根据roleId-->
+    <delete id="deleteResouceContextByRoleId" parameterType="com.myweb.domain.Role_resource_relation">
+        delete from Role_resource_relation where role_id = #{RoleId}
+    </delete>
+
+
+<!--    为角色分配资源接口-->
+    <insert id="roleContextResouceByResourceId" parameterType="com.myweb.domain.Role_resource_relation">
+        insert into Role_resource_relation
+        values(null,#{resourceId},#{roleId},#{createdTime},#{updatedTime},#{createdBy},#{updatedBy})
+    </insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>
